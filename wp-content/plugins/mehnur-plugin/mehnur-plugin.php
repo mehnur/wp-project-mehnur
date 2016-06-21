@@ -8,7 +8,7 @@
  * Author URI: http://xentora.com/
  * Developer: Xentora Solutions
  * Developer URI: http://xentora.com/
- * Copyright: � 2016 Xentora Solutions.
+ * Copyright:2016 Xentora Solutions.
  * License: GNU General Public License v3.0
  * License URI: http://www.gnu.org/licenses/gpl-3.0.html
  */
@@ -19,7 +19,7 @@
  function myFirstShortCode(){
 	 
 	 $string = 'Hi this is my first shortcode';
-	 return $string;
+     return $string;
  }
  
  add_shortcode('mehnur_shortcode1','myFirstShortCode');
@@ -32,8 +32,9 @@
  function bookShortCode(){
 	 
 	 $args = array(
-		'post_type' => 'book'
-	 );
+		'post_type' => 'book',
+         'post_status'=>'publish'
+     );
 	 
 	 $query = new WP_Query( $args );
 	 
@@ -104,7 +105,104 @@ function codex_book_init() {
 	register_post_type( 'book', $args );
 	//register_post_type( 'mehnur', $args );
 }
+
+
+// hook into the init action and call create_book_taxonomies when it fires
+add_action( 'init', 'create_book_taxonomies', 0 );
+
+// create two taxonomies, genres and Authors for the post type "book"
+function create_book_taxonomies() {
+    // Add new taxonomy, make it hierarchical (like categories)
+    $labels = array(
+        'name'              => _x( 'Genres', 'taxonomy general name' ),
+        'singular_name'     => _x( 'Genre', 'taxonomy singular name' ),
+        'search_items'      => __( 'Search Genres' ),
+        'all_items'         => __( 'All Genres' ),
+        'parent_item'       => __( 'Parent Genre' ),
+        'parent_item_colon' => __( 'Parent Genre:' ),
+        'edit_item'         => __( 'Edit Genre' ),
+        'update_item'       => __( 'Update Genre' ),
+        'add_new_item'      => __( 'Add New Genre' ),
+        'new_item_name'     => __( 'New Genre Name' ),
+        'menu_name'         => __( 'Genre' ),
+    );
+
+    $args = array(
+        'hierarchical'      => true,
+        'labels'            => $labels,
+        'show_ui'           => true,
+        'show_admin_column' => true,
+        'query_var'         => true,
+        'rewrite'           => array( 'slug' => 'genre' ),
+    );
+
+    register_taxonomy( 'genre', array( 'book' ), $args );
+
+    // Add new taxonomy, NOT hierarchical (like tags)
+    $labels = array(
+        'name'                       => _x( 'Authors', 'taxonomy general name' ),
+        'singular_name'              => _x( 'Writer', 'taxonomy singular name' ),
+        'search_items'               => __( 'Search Authors' ),
+        'popular_items'              => __( 'Popular Authors' ),
+        'all_items'                  => __( 'All Authors' ),
+        'parent_item'                => null,
+        'parent_item_colon'          => null,
+        'edit_item'                  => __( 'Edit Writer' ),
+        'update_item'                => __( 'Update Writer' ),
+        'add_new_item'               => __( 'Add New Writer' ),
+        'new_item_name'              => __( 'New Writer Name' ),
+        'separate_items_with_commas' => __( 'Separate Authors with commas' ),
+        'add_or_remove_items'        => __( 'Add or remove Authors' ),
+        'choose_from_most_used'      => __( 'Choose from the most used Authors' ),
+        'not_found'                  => __( 'No Authors found.' ),
+        'menu_name'                  => __( 'Authors' ),
+    );
+
+    $args = array(
+        'hierarchical'          => false,
+        'labels'                => $labels,
+        'show_ui'               => true,
+        'show_admin_column'     => true,
+        'update_count_callback' => '_update_post_term_count',
+        'query_var'             => true,
+        'rewrite'               => array( 'slug' => 'writer' ),
+    );
+
+    register_taxonomy( 'writer', 'book', $args );
+}
  
- 
- 
- 
+
+add_action('before_form','addField');
+function addField(){
+    ?>
+    This is my form
+    <input type="text" name="test" placeholder="test field by arif" />
+    <?php
+}
+
+add_filter('modify_args','argChanges',10,2);
+function argChanges($args,$secondargument){
+
+    $args['post_type']='post';
+
+    return $args;
+
+}
+
+add_filter('login_headertitle','ssargChanges',10,1);
+function ssargChanges($title){
+
+    $title = 'MEHNNNNNNNNNUUURR';
+    return $title;
+
+}
+
+// 10 is for the piroity for execution
+// 2 shows number of arguments. If there is one arugment then we dont pass 1 but if there are more than 1 argument, then we have to pass the
+// argumetn in the add_filter hook
+
+add_action('login_enqueue_scripts','ourFooter');
+function ourFooter(){
+
+    echo 'hellllloooo';
+}
