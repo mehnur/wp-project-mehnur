@@ -7,6 +7,12 @@ class ProductShortCodes{
 
     public function __construct()
     {
-        add_action( 'init',array($this,'registerPostType') );
+        add_shortcode( 'list_products',array($this,'listProducts') );
+    }
+
+    public function listProducts()
+    {
+
+        return 'Products listed.';
     }
 }
