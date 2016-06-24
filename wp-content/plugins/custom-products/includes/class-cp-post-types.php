@@ -8,6 +8,16 @@ class customPostTypeProduct{
     public function __construct()
     {
         add_action( 'init',array($this,'registerPostType') );
+        add_action( 'after_setup_theme', array($this,'registerMenu' ));
+
+    }
+
+    public function registerMenu()
+    {
+        // This theme uses wp_nav_menu() in two locations.
+        register_nav_menus( array(
+            'secondary' => __( 'Secondry Menu', 'cp-lang' ),
+        ) );
     }
 
     public function registerPostType()

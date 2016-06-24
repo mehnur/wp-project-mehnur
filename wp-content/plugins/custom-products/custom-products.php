@@ -109,9 +109,9 @@ if ( ! class_exists( 'CustomProducts' ) ) :
         public function includes() {
 
             include_once( 'includes/class-cp-post-types.php' ); // Registers post types
-            include_once( 'includes/class-cp-shortcodes.php' ); // Registers post types
-            include_once( 'includes/class-cp-widgets.php' );
-            include_once( 'admin/class-cp-admin.php' );
+            include_once( 'includes/class-cp-shortcodes.php' ); // Register shortcode
+            include_once( 'includes/class-cp-widgets.php' ); // Registers widgets
+            include_once( 'admin/class-cp-admin.php' ); // Administration menu for custom tasks
 
         }
 
@@ -155,3 +155,4 @@ function CP() {
 }
 
 CP();
+
