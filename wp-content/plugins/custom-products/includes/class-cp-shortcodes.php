@@ -12,13 +12,11 @@ class ProductShortCodes{
 
     public function listProducts()
     {
+            $args = array(
+                'post_type' => 'product',
+                'post_status'=>'publish'
 
-        $args = array(
-            'post_type' => 'product',
-            'post_status'=>'publish'
-
-        );
-
+            );
         $query = new WP_Query($args);
 
         if($query->have_posts()){
