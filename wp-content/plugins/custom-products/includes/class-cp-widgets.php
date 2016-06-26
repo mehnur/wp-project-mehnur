@@ -41,8 +41,27 @@ class MehnurWidget extends WP_Widget {
         echo $args['before_widget'];
         if ( ! empty( $instance['title'] ) ) {
             echo $args['before_title'] . apply_filters( 'widget_title', $instance['title'] ). $args['after_title'];
+
+            //echo $instance['title'];
         }
-        echo __( 'Hello, World!', 'cp-lang' );
+
+        $count = $instance['count'];
+
+        $args = array(
+            'post_type'=>'product',
+            'post_status'=>'publish',
+            'posts_per_page'=> $count
+        );
+
+        $query = new WP_Query($args);
+        $products = $query->posts;
+        foreach($products as $key => $product){
+            $ptitle = $product->post_title;
+            $id = $product->ID;
+            $price = get_post_meta($id,'price',true);
+            echo '<h3>' . $ptitle . ' PRICE '  . $price . '</h3><br />';
+        }
+
         echo $args['after_widget'];
     }
 
@@ -60,11 +79,24 @@ class MehnurWidget extends WP_Widget {
         else {
             $title = __( 'Mehnur Widget', 'cp-lang' );
         }
+
+        if ( isset( $instance[ 'count' ] ) ) {
+            $count = $instance[ 'count' ];
+        }
+        else {
+            $count = 5;
+        }
         ?>
         <p>
             <label for="<?php echo $this->get_field_id( 'title' ); ?>"><?php _e( 'Title:' ); ?></label>
             <input class="widefat" id="<?php echo $this->get_field_id( 'title' ); ?>" name="<?php echo $this->get_field_name( 'title' ); ?>" type="text" value="<?php echo esc_attr( $title ); ?>">
         </p>
+
+        <p>
+            <label for="<?php echo $this->get_field_id( 'count' ); ?>"><?php _e( 'Number of products to show:' ); ?></label>
+            <input class="widefat" id="<?php echo $this->get_field_id( 'count' ); ?>" name="<?php echo $this->get_field_name( 'count' ); ?>" type="text" value="<?php echo esc_attr( $count ); ?>">
+        </p>
+
         <?php
     }
 
@@ -81,6 +113,7 @@ class MehnurWidget extends WP_Widget {
     public function update( $new_instance, $old_instance ) {
         $instance = array();
         $instance['title'] = ( ! empty( $new_instance['title'] ) ) ? strip_tags( $new_instance['title'] ) : '';
+        $instance['count'] = ( ! empty( $new_instance['count'] ) ) ? strip_tags( $new_instance['count'] ) : '';
 
         return $instance;
     }
